@@ -1,0 +1,11 @@
+{
+	"env": {
+		"browser": true
+	},
+	"rules": {
+		"no-restricted-modules": 0,
+		"global-strict": [1, "never"],
+		"dot-notation": [2, { "allowKeywords": false }],
+		"max-params": 0 // beacuse of AMD
+	}
+}

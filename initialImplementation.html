@@ -1,0 +1,211 @@
+/*
+ * Here for posterity
+ *
+ * This is what I quickly coded up over part of a weekend just to scratch a coding itch before deciding to use
+ * this project as an opportunity to get accustomed to React/Redux
+ */
+<html>
+<head>
+	<title></title>
+	<script type="text/javascript" src="gwent.js"></script>
+	<style type="text/css">
+		ul {
+			padding: 0;
+			margin: 0;
+		}
+		.gameBoard {
+			width: 100%;
+			height: 100%;
+			display: table;
+		}
+		.sidebarContainer {
+			width: 20%;
+			height: 100%;
+			display: table-cell;
+		}
+		.sidebar {
+			display: table;
+			height: 100%;
+			width: 100%;
+		}
+		.sidebarInfoContainer {
+			display: table-row;
+		}
+		.sidebarInfo {
+			display: table-cell;
+		}
+		.playerFieldsContainer {
+			height: 100%;
+			width: 60%;
+			display: table-cell;
+		}
+		.playerField {
+			width: 100%;
+			height: 50%;
+		}
+		.playerInfo {
+			display: table;
+			height: 100%;
+			width: 100%;
+		}
+		.cardRowContainer {
+			display: table;
+			width: 100%;
+    		height: 25%;
+		}
+		.cardRow {
+			list-style: none;
+			width: 100%;
+			height: 25%;
+			display: table-row;
+		}
+		.card {
+			display: table-cell;
+			position: relative;
+			width: 10%;
+		}
+		.cardImg {
+			max-height: 100%;
+			width: auto;
+			display: block;
+			position: absolute;
+		}
+		.leaderCardContainer {
+			width: 50%;
+			display: table-cell;
+		}
+		.leaderCard {
+			display: table;
+			height: 66%;
+		}
+		.livesContainer {
+			display: table-cell;
+		}
+		.lives {
+			list-style: none;
+			width: 100%;
+			height: 50%;
+			display: table;
+		}
+		.lifeContainer {
+			width: 50px;
+			height: 100%;
+			display: table-cell;
+		}
+		.life {
+			content: ' ';
+			margin: 5px;
+			width: 40px;
+			height: 40px;
+			border-radius: 50% 50%;
+			background-color: gray;
+		}
+		.life.active {
+			background-color: red;
+		}
+		.filler {
+			display: table-cell;
+		}
+	</style>
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
+</head>
+<body>
+	<div class="gameBoard js_gameBoard">
+		<div class="sidebarContainer">
+			<div class="sidebar">
+				<div class="sidebarInfoContainer">
+					<div class="js_sidebarInfo_player1 sidebarInfo">
+						<div class="playerInfo">
+							<div class="leaderCardContainer">
+								<ul class="leaderCard js_leaderCard"></ul>
+							</div>
+							<div class="livesContainer">
+								<ul class="lives js_lives">
+									<li class="lifeContainer"><div class="js_life life active"></div></li>
+									<li class="lifeContainer"><div class="js_life life active"></div></li>
+								</ul>
+							</div>
+						</div>
+					</div>
+				</div>
+
+				<ul class="cardRow js_weatherCards"></ul>
+
+				<div class="sidebarInfoContainer">
+					<div class="sidebarInfo js_sidebarInfo_player2">
+						<div class="playerInfo">
+							<div class="leaderCardContainer">
+								<ul class="leaderCard js_leaderCard"></ul>
+							</div>
+							<div class="livesContainer">
+								<ul class="lives js_lives">
+									<li class="lifeContainer"><div class="js_life life active"></div></li>
+									<li class="lifeContainer"><div class="js_life life active"></div></li>
+								</ul>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+		<div class="playerFieldsContainer">
+			<div id="js_playerField1" class="playerField">
+				<div class="cardRowContainer">
+					<ul class="cardRow hand js_hand">
+						<li class="js_score score filler"></li>
+						<li class="filler"></li>
+					</ul>
+				</div>
+				<div class="cardRowContainer">
+					<ul class="cardRow js_siege">
+						<li class="js_score score filler"></li>
+						<li class="filler"></li>
+					</ul>
+				</div>
+				<div class="cardRowContainer">
+					<ul class="cardRow js_ranged">
+						<li class="js_score score filler"></li>
+						<li class="filler"></li>
+					</ul>
+				</div>
+				<div class="cardRowContainer">
+					<ul class="cardRow js_melee">
+						<li class="js_score score filler"></li>
+						<li class="filler"></li>
+					</ul>
+				</div>
+			</div>
+			<div id="js_playerField2" class="playerField">
+				<div class="cardRowContainer">
+					<ul class="cardRow js_melee">
+						<li class="js_score score filler"></li>
+						<li class="filler"></li>
+					</ul>
+				</div>
+				<div class="cardRowContainer">
+					<ul class="cardRow js_ranged">
+						<li class="js_score score filler"></li>
+						<li class="filler"></li>
+					</ul>
+				</div>
+				<div class="cardRowContainer">
+					<ul class="cardRow js_siege">
+						<li class="js_score score filler"></li>
+						<li class="filler"></li>
+					</ul>
+				</div>
+				<div class="cardRowContainer">
+					<ul class="cardRow hand js_hand">
+						<li class="js_score score filler"></li>
+						<li class="filler"></li>
+					</ul>
+				</div>
+			</div>
+		</div>
+		<div class="sidebar">
+			<div class="discardPile js_discardPile_player1"></div>
+			<div class="discardPile js_discardPile_player2"></div>
+		</div>
+	</div>
+</body>
+</html>

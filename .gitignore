@@ -1,0 +1,18 @@
+.project
+.build
+.idea
+bin/
+generated/
+node_modules
+oom_1
+tmp/
+bundle.js
+bundle.js.map
+
+
+# OS generated files #
+######################
+.DS_Store*
+ehthumbs.db
+Icon?
+Thumbs.db

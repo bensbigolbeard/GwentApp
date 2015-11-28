@@ -1,0 +1,36 @@
+{
+	"env": {
+		"browser": false,
+		"node": true,
+		"amd": false,
+		"es6": true,
+		"mocha": true
+	},
+
+	"ecmaFeatures": {
+		"jsx": true,
+		"modules": true
+	 },
+
+	 "plugins": [
+		"react"
+	 ],
+
+	"rules": {
+		"block-scoped-var": 0, // because of bugs, but using let so it shouldn't matter
+		"no-var": 2, // let, FTW!
+		"strict": [2, "never"], // es6 modules have implicit strict
+
+		// react plugin rules
+		"react/display-name": 0,
+		"react/jsx-uses-react": 1,
+		"react/jsx-uses-vars": 1,
+		"react/no-did-mount-set-state": 1,
+		"react/no-did-update-set-state": 1,
+		"react/no-multi-comp": 1,
+		"react/prop-types": 2,
+		"react/react-in-jsx-scope": 1,
+		"react/self-closing-comp": 1,
+		"react/wrap-multilines": 1,
+	}
+}

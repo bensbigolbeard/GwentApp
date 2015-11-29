@@ -439,9 +439,18 @@ const allCards = {
 			}
 		]
 	},
-	monsters: [],
-	scoiatel: [],
-	generic: []
+	monsters: {
+		leaders: [],
+		troops: []
+	},
+	scoiatel: {
+		leaders: [],
+		troops: []
+	},
+	generic: {
+		leaders: [],
+		troops: []
+	}
 };
 
 export { allCards };

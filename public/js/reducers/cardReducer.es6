@@ -14,39 +14,48 @@ let defaultCardData = {
 	}
 };
 
-const generateCardId = function generateCardId(state, retries = 2) {
+const generateCardId = function generateCardId() {
 	let cardId = 'card_' + (
 			Math.floor(Math.random() * 100) *
 			Math.floor(Math.random() * 100)
 		);
-	if (_.where(state, {cardId}).length) {
-		console.log(retries);
-		if (retries > 0) {
-			return generateCardId(state, retries - 1);
-		} else {
-			return 'wowThisIsExtremelyUnlikely';
-		}
-	}
 	return cardId;
-}
+};
 
-const addCardReducer = (state = defaultCardData, action) => {
-	// revisit how this is constructed
-	return {
-		...state,
-		...action.cardData,
-		hasSpecialAbility: !!state.specialAbility,
-		cardId: generateCardId(state)
-	};
+const addCardReducer = (state, action) => {
+	switch (action.type) {
+		case 'ADD_LEADER_CARD':
+			return Object.assign({},
+				action.cardData,
+				{
+					cardId: generateCardId()
+				}
+			);
+		case 'ADD_CARD':
+			return Object.assign({},
+				defaultCardData,
+				action.cardData,
+				{
+					hasSpecialAbility: !!action.cardData.specialAbility,
+					cardId: generateCardId()
+				}
+			);
+		default:
+			return state;
+	}
 };
 
 const cardsReducer = (state = {}, action) => {
 	switch (action.type) {
 		case 'ADD_CARD':
-			return [
-				...state,
-				addCardReducer(state, action)
-			];
+			return {
+				leaders: action.cardData.leaders.map((card) => {
+					return addCardReducer(null, { type: 'ADD_LEADER_CARD', cardData: card })
+				}),
+				troops: action.cardData.troops.map((card) => {
+					return addCardReducer(null, { type: 'ADD_CARD', cardData: card })
+				})
+			}
 		case 'GET_ALL_CARDS':
 			return state;
 		default:
@@ -54,4 +63,24 @@ const cardsReducer = (state = {}, action) => {
 	}
 };
 
-export { cardsReducer };
+const decksReducer = (state = {}, action) => {
+	switch (action.type) {
+		case 'ADD_DECKS':
+			return Object.assign({},
+				state,
+				{
+					decks: Object.keys(action.cardData).reduce((deckAcc, armyName) => {
+						deckAcc[armyName] = cardsReducer(
+							null,
+							{ type: 'ADD_CARD', cardData: action.cardData[armyName] }
+						);
+						return deckAcc;
+					}, {})
+				}
+			);
+		default:
+			return state;
+	}
+};
+
+export { decksReducer };

@@ -8,10 +8,18 @@ const addCardAction = (cardData) => {
 		}
 	};
 };
+const addDecksAction = (cardData) => {
+	return {
+		type: 'ADD_DECKS',
+		cardData: {
+			...cardData
+		}
+	};
+};
 const getCardsAction = () => {
 	return {
 		type: 'GET_ALL_CARDS'
 	};
 };
 
-export { addCardAction, getCardsAction };
+export { addCardAction, getCardsAction, addDecksAction };

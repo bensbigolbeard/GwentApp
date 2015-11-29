@@ -2,7 +2,7 @@
 import { createStore } from 'redux';
 import React from 'react';
 import ReactDOM from 'react-dom';
-import { cardsReducer } from 'reducers/cardReducer';
+import { decksReducer } from 'reducers/cardReducer';
 import * as cardActions from 'actions/cardActions';
 import { allCards } from 'data/cards';
 
@@ -10,20 +10,10 @@ import { allCards } from 'data/cards';
 import { CardComponent } from 'components/cards/cardComponents';
 import { PlayerFieldsComponent } from 'components/playerField/playerFieldComponents';
 
-const counter = (state = 0, action) => {
-    switch (action.type) {
-        case 'ADD_CARD':
-            return state + 1;
-        case 'REMOVE_CARD':
-            return state - 1;
-        default:
-            return state;
-    }
-};
+const store = createStore(decksReducer);
+store.dispatch(cardActions.addDecksAction(allCards));
 
-const store = createStore(cardsReducer);
-store.dispatch(cardActions.addCardAction(allCards.nilfgaardian.troops[0]));
-store.dispatch(cardActions.addCardAction(allCards.nilfgaardian.troops[1]));
+console.log('decks', store.getState());
 
 const GwentAppd = () => (
     <div className="gameBoard js_gameBoard">

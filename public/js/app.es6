@@ -4,9 +4,11 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import { cardsReducer } from 'reducers/cardReducer';
 import * as cardActions from 'actions/cardActions';
-import { CardComponent } from 'components/cards/cardComponents';
-import { CardRowComponent } from 'components/playerField/playerFieldComponents';
 import { allCards } from 'data/cards';
+
+// for testing
+import { CardComponent } from 'components/cards/cardComponents';
+import { PlayerFieldsComponent } from 'components/playerField/playerFieldComponents';
 
 const counter = (state = 0, action) => {
     switch (action.type) {
@@ -23,10 +25,10 @@ const store = createStore(cardsReducer);
 store.dispatch(cardActions.addCardAction(allCards.nilfgaardian.troops[0]));
 store.dispatch(cardActions.addCardAction(allCards.nilfgaardian.troops[1]));
 
-const GwentAppd = ({card}) => (
-    <ul className="cardRow">
-        <CardComponent card={card} />
-    </ul>
+const GwentAppd = () => (
+    <div className="gameBoard js_gameBoard">
+        <PlayerFieldsComponent cards={store.getState()} />
+    </div>
 );
 const GwentApp = () => (
     <div className="gameBoard js_gameBoard">
@@ -38,7 +40,7 @@ const GwentApp = () => (
 
 const render = () => {
     ReactDOM.render(
-        <CardRowComponent rowName='hand' cards={store.getState()} />,
+        <GwentAppd />,
         document.getElementById('root')
     );
 };

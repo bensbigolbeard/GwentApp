@@ -8,12 +8,12 @@ const CardRowComponent = ({
 	rowName,
 	cards
 }) => {
-	console.log('****cards', cards);
+
 	let cardsToPrint = cards.map((card) => {
 			return <CardComponent key={card.cardId} card={card} />;
 		});
 	let rowClassList = `cardRow ${rowName} js_${rowName}`;
-	console.log(cardsToPrint);
+
 	return (
 		<div className="cardRowContainer">
 			<ul className={rowClassList}>
@@ -25,25 +25,30 @@ const CardRowComponent = ({
 	);
 };
 
-const PlayerFieldComponent = ({ playerPosition }) => {
+const PlayerFieldComponent = ({
+	playerPosition,
+	cards
+}) => {
 	let defaultRowOrder = ['hand', 'siege', 'ranged', 'melee'];
 	let rowsToMap = playerPosition == 1 ? defaultRowOrder : defaultRowOrder.reverse();
 
-	let rows = rowsToMap.map((rowName) => {
-			return <CardRowComponent rowName={rowName} />;
+	let rows = rowsToMap.map((rowName, index) => {
+		let key = `row_${index}`
+			return <CardRowComponent key={key} rowName={rowName} cards={cards} />;
 		});
-
+	let rowId = `js_playerField${playerPosition}`;
 	return (
-		<div id="js_playerField{playerPosition}" className="playerField">
+		<div id={rowId} className="playerField">
 			{rows}
 		</div>
 	);
 };
 
-const PlayerFieldsComponent = ({ side }) => (
-    <div className="playerFieldsContainer">
-        <PlayerFieldComponent />
-    </div>
+const PlayerFieldsComponent = ({ cards }) => (
+	<div className="playerFieldsContainer">
+		<PlayerFieldComponent playerPosition="1" cards={cards} />
+		<PlayerFieldComponent playerPosition="2" cards={cards} />
+	</div>
 );
 
-export { PlayerFieldsComponent, CardRowComponent };
+export { PlayerFieldsComponent };

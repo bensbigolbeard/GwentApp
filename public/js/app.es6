@@ -1,8 +1,10 @@
 'use strict';
-import { createStore } from 'redux';
+import { createStore, combineReducers } from 'redux';
 import React from 'react';
 import ReactDOM from 'react-dom';
-import { decksReducer } from 'reducers/cardReducer';
+import { Provider } from 'react-redux'
+import decks from 'reducers/cardReducer';
+import players from 'reducers/playerReducer';
 import * as cardActions from 'actions/cardActions';
 import { allCards } from 'data/cards';
 
@@ -10,29 +12,47 @@ import { allCards } from 'data/cards';
 import { CardComponent } from 'components/cards/cardComponents';
 import { PlayerFieldsComponent } from 'components/playerField/playerFieldComponents';
 
-const store = createStore(decksReducer);
+let combinedReducers = combineReducers({
+	decks,
+	players
+});
+
+const store = createStore(combinedReducers);
 store.dispatch(cardActions.addDecksAction(allCards));
 
-console.log('decks', store.getState());
+// test setup
+store.dispatch({type: 'ADD_PLAYER', playerPosition: '1'});
+store.dispatch({type: 'ADD_PLAYER', playerPosition: '2'});
+//console.log('state', store.getState());
+let testDecks = store.getState().decks;
+store.dispatch({type: 'SELECT_DECK', deck: testDecks.nilfgaardian, playerPosition: '2'});
+store.dispatch({type: 'SELECT_DECK', deck: testDecks.northernRealms, playerPosition: '1'});
+store.dispatch({type: 'DRAW_HAND', playerPosition: '1'});
+store.dispatch({type: 'DRAW_HAND', playerPosition: '2'});
 
-const GwentAppd = () => (
-    <div className="gameBoard js_gameBoard">
-        <PlayerFieldsComponent cards={store.getState()} />
-    </div>
+//console.log('store', store.getState().players);
+
+const TestComponent = () => (
+	<div className="gameBoard js_gameBoard">
+		<PlayerFieldsComponent players={store.getState().players} />
+	</div>
 );
+
 const GwentApp = () => (
-    <div className="gameBoard js_gameBoard">
-        <SidebarComponent side="left"/>
-        <PlayerFieldsComponent />
-        <SidebarComponent side="right"/>
-    </div>
+	<div className="gameBoard js_gameBoard">
+		<SidebarComponent side="left"/>
+		<PlayerFieldsComponent />
+		<SidebarComponent side="right"/>
+	</div>
 );
 
 const render = () => {
-    ReactDOM.render(
-        <GwentAppd />,
-        document.getElementById('root')
-    );
+	ReactDOM.render(
+		<Provider store={store} >
+			<TestComponent />
+		</Provider>,
+		document.getElementById('root')
+	);
 };
 
 store.subscribe(render);

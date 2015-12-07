@@ -2,57 +2,40 @@
 
 import React from 'react';
 import ReactDOM from 'react-dom';
-import { CardComponent, CardContainerComponent } from '../cards/cardComponents';
+import { CardRowContainerComponent } from '../cards/cardComponents';
 
-const CardRowComponent = ({
-	rowName,
-	playerPosition,
-	cards
-}) => {
-
-	let cardsToPlay = cards.map((card) => {
-			if (card.boardPosition === 'inHand') {
-				return <CardContainerComponent key={card.cardId} card={card} playerPosition={playerPosition} />;
-			}
-			return <CardComponent key={card.cardId} card={card} />;
-		});
-	let rowClassList = `cardRow ${rowName} js_${rowName}`;
-
-	return (
-		<div className="cardRowContainer">
-			<ul className={rowClassList}>
-				<li className="js_score score filler"></li>
-				{cardsToPlay}
-				<li className="filler"></li>
-			</ul>
-		</div>
-	);
-};
+import * as _ from 'lodash';
 
 const PlayerFieldComponent = ({
-	playerPosition,
-	cards
+	playerId,
+	playerDeck,
+	sourceDeck
 }) => {
 	let defaultRowOrder = ['hand', 'siege', 'ranged', 'melee'];
-	let rowsToMap = playerPosition == 1 ? defaultRowOrder : defaultRowOrder.reverse();
-	let playerFieldId = `js_playerField${playerPosition}`;
+	let rowsToMap = playerId == 0 ? defaultRowOrder : defaultRowOrder.reverse();
+	let playerFieldId = `js_playerField${playerId}`;
+	let rows = [];
 
-	let rows = rowsToMap.map((rowName, index) => {
-		let key = `row_${index}`;
-		let cardsForRow;
+	function getCardRowIds(cardIds, sourceDeckUnits, rowName) {
+		return cardIds.filter((cardId) => {
+			let card = _.findWhere(sourceDeckUnits, {id: cardId});
+
+			return card && card.category === rowName
+		})
+	}
+
+	rows = rowsToMap.map((rowName, index) => {
+		let key = `field_${index}`;
+		let cardIdsForRow;
 
 		// TODO: use React-Redux to format this data?
 		if (rowName === 'hand') {
-			cardsForRow = cards.filter((card) => {
-				return card.boardPosition === 'inHand';
-			});
+			cardIdsForRow = playerDeck.inHand;
 		} else {
-			cardsForRow = cards.filter((card) => {
-				return card.boardPosition === 'inPlay' && card.category === rowName;
-			});
+			cardIdsForRow = getCardRowIds(playerDeck.inPlay, sourceDeck.units, rowName);
 		}
 
-		return <CardRowComponent key={key} rowName={rowName} cards={cardsForRow} playerPosition={playerPosition}/>;
+		return <CardRowContainerComponent key={key} rowName={rowName} cardIds={cardIdsForRow} playerDeckId={playerDeck.id} />;
 	});
 
 	return (
@@ -62,11 +45,20 @@ const PlayerFieldComponent = ({
 	);
 };
 
-const PlayerFieldsComponent = ({ players }) => {
+const PlayerFieldsComponent = ({
+	sourceDecks,
+	players,
+	playerDecks
+}) => {
+	let playerFields = players.map((player, index) => {
+		let key = `fields_${index}`;
+		let playerDeck = playerDecks[player.deckId];
+		return <PlayerFieldComponent key={key} playerId={player.id} playerDeck={playerDeck} sourceDeck={sourceDecks[playerDeck.sourceDeckId]} />
+	});
+
 	return (
 		<div className="playerFieldsContainer">
-			<PlayerFieldComponent playerPosition="1" cards={players['1'].deck} />
-			<PlayerFieldComponent playerPosition="2" cards={players['2'].deck} />
+		{playerFields}
 		</div>
 	);
 };

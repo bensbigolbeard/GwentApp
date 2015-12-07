@@ -598,7 +598,7 @@ const allCards = {
 			name: 'Black Infantry Archer',
 			power: 10,
 			category: 'ranged',
-			imageFront: 'black_infantry_archer2_card'
+			imageFront: 'black_infatry_archer2_card'
 		}
 	],
 	monsters: [],

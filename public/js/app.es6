@@ -2,41 +2,65 @@
 import { createStore, combineReducers } from 'redux';
 import React from 'react';
 import ReactDOM from 'react-dom';
-import { Provider } from 'react-redux'
-import decks from 'reducers/cardReducer';
-import players from 'reducers/playerReducer';
-import * as cardActions from 'actions/cardActions';
+import { Provider } from 'react-redux';
+
+// Card Data
 import { allCards } from 'data/cards';
+
+// Reducers
+import sourceDecks from 'reducers/decksReducer';
+import players from 'reducers/playersReducer';
+import playerDecks from 'reducers/playerDecksReducer';
+
+// Actions
+import * as deckActions from 'actions/deckActions';
+import * as playerActions from 'actions/playerActions';
 
 // for testing
 import { CardComponent } from 'components/cards/cardComponents';
 import { PlayerFieldsComponent } from 'components/playerField/playerFieldComponents';
 
 let combinedReducers = combineReducers({
-	decks,
-	players
+	sourceDecks,
+	players,
+	playerDecks,
 });
 
 const store = createStore(combinedReducers);
-store.dispatch(cardActions.addDecksAction(allCards));
+store.dispatch(deckActions.addDecks(allCards));
+console.log('state', store.getState());
 
 // test setup
-store.dispatch({type: 'ADD_PLAYER', playerPosition: '1'});
-store.dispatch({type: 'ADD_PLAYER', playerPosition: '2'});
-//console.log('state', store.getState());
-let testDecks = store.getState().decks;
-store.dispatch({type: 'SELECT_DECK', deck: testDecks.nilfgaardian, playerPosition: '2'});
-store.dispatch({type: 'SELECT_DECK', deck: testDecks.northernRealms, playerPosition: '1'});
-store.dispatch({type: 'DRAW_HAND', playerPosition: '1'});
-store.dispatch({type: 'DRAW_HAND', playerPosition: '2'});
+store.dispatch(playerActions.addPlayer());
+store.dispatch(playerActions.addPlayer());
+{
+	let currentStore = store.getState();
+	currentStore.players.forEach((player) => {
+		store.dispatch({type: 'SELECT_DECK', sourceDeckId: player.id, playerId: player.id, sourceDeck: currentStore.sourceDecks[player.id]});
+	});
+}
+console.log('state', store.getState());
+{
+	let currentStore = store.getState();
+	currentStore.players.forEach((player) => {
+		store.dispatch({type: 'DRAW_HAND', playerDeckId: player.deckId});
+	});
+}
 
-//console.log('store', store.getState().players);
+const TestComponent = () => {
+	let currentState = store.getState();
 
-const TestComponent = () => (
-	<div className="gameBoard js_gameBoard">
-		<PlayerFieldsComponent players={store.getState().players} />
-	</div>
-);
+	return (
+		<div className="gameBoard js_gameBoard">
+			<PlayerFieldsComponent
+				sourceDecks={currentState.sourceDecks}
+				players={currentState.players}
+				playerDecks={currentState.playerDecks}
+			/>
+		</div>
+	);
+};
+console.log('store', store.getState());
 
 const GwentApp = () => (
 	<div className="gameBoard js_gameBoard">

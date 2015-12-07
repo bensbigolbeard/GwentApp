@@ -1,115 +1,32 @@
 'use strict';
 
-let defaultCardData = {
-	//'inPlay', 'discarded'
-	boardPosition: 'inDeck',
-	environmentalEffects: {
-		weather: null,
-		commandersHorn: null,
-		support: null,
-		muster: null,
-		tightBond: null
+const cardReducer = (state = {}, action) => {
+	switch (action.type) {
+		case 'CONSTRUCT_CARD':
+			return Object.assign({},
+				action.sourceCard,
+				action.cardMetadata
+			);
+		default:
+			return state;
 	}
 };
-// make better plz
-let counter = 0;
-const generateCardId = function generateCardId() {
-	let cardId = 'card_' + (
-			//Math.floor(Math.random() * 100) *
-			//Math.floor(Math.random() * 100)
-			counter++
-		);
-	return cardId;
-};
 
-const addCardReducer = (state, action) => {
+export default function cardsReducer(state = {}, action) {
 	switch (action.type) {
-		case 'ADD_LEADER_CARD': {
-			let newCardInfo = state && state.cardId ?
-				{} :
-				{ cardId: generateCardId() };
+		case 'CONSTRUCT_CARDS': {
+			let constructedCardList = [];
+			action.cardList.forEach((cardId) => {
+				let sourceCard = _.findWhere(action.sourceDeck, {id: cardId});
+				let cardMetadata = _.findWhere(action.playerDeck, {id: cardId});
 
-			return Object.assign({},
-				action.cardData,
-				newCardInfo
-			);
+				constructedCardList = [
+					...constructedCardList,
+					cardReducer(null, {type: 'CONSTRUCT_CARD', sourceCard, cardMetadata})
+				];
+			})
 		}
-		case 'ADD_CARD': {
-			let newCardInfo = state && state.cardId ?
-				{} :
-				{
-					hasSpecialAbility: !!action.cardData.specialAbility,
-					cardId: generateCardId()
-				};
-
-			return Object.assign({},
-				defaultCardData,
-				state,
-				action.cardData,
-				newCardInfo
-			);
-		}
-		default:
-			return state;
-	}
-};
-
-const cardListReducer = (state, action) => {
-	switch (action.type) {
-		case 'ADD_CARDS':
-			return [
-				...state,
-				...action.cardData.map((card) => {
-					return addCardReducer(
-						card,
-						{ type: 'ADD_CARD', cardData: { boardPosition: action.boardPosition }}
-					);
-				})
-			];
-		default:
-			return state;
-	}
-};
-
-const factionCardsReducer = (state = {}, action) => {
-	switch (action.type) {
-		case 'ADD_CARDS':
-			return action.cardData.map((card) => {
-					let addCardAction = card.isLeader ? 'ADD_LEADER_CARD' : 'ADD_CARD';
-
-					return addCardReducer(null, {type: addCardAction, cardData: card})
-				});
-		case 'GET_ALL_CARDS':
-			return state;
-		default:
-			return state;
-	}
-};
-
-export default function decksReducer(state = {}, action) {
-	switch (action.type) {
-		case 'ADD_DECKS':
-			return Object.assign({},
-				state,
-				Object.keys(action.cardData).reduce((deckAcc, factionName) => {
-					if (factionName !== 'neutral') {
-						deckAcc[factionName] = factionCardsReducer(
-							null,
-							{
-								type: 'ADD_CARDS',
-								cardData: [
-									...action.cardData[factionName],
-									...action.cardData.neutral
-								]
-							}
-						);
-					}
-					return deckAcc;
-				}, {})
-			);
 		default:
 			return state;
 	}
 }
-
-export { cardListReducer };
